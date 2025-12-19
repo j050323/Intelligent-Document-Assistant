@@ -1,25 +1,80 @@
-# 环境变量文件
+# ===================== 前端（Vue）专属忽略 =====================
+# Node.js依赖（体积大，无需上传，npm install可重新生成）
+node_modules/
+# 构建/打包产物（编译后的代码，无需跟踪）
+dist/
+build/
+# 环境变量（含API地址、密钥等敏感信息）
 .env
 .env.local
-.env.*.local
-
-# IDE
-.idea/
+.env.development.local
+.env.production.local
+.env.test.local
+# npm/yarn日志
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+# 编辑器配置（本地工具，每个人的配置不同）
 .vscode/
-*.iml
-*.ipr
-*.iws
-
-# 操作系统
+.idea/
+# 系统文件
 .DS_Store
 Thumbs.db
+# Vue CLI缓存
+.vuecli-service/
+# pnpm/yarn缓存
+.pnpm-store/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
 
-# 日志文件
+# ===================== 后端（Spring Boot）专属忽略 =====================
+# Maven/Gradle构建产物
+target/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+# Gradle缓存
+.gradle/
+# IDEA编辑器配置（Spring Boot常用IDEA开发）
+.idea/
+*.iml
+*.iws
+*.ipr
+# 日志文件（动态生成，体积会持续增大）
+logs/
 *.log
-
 # 临时文件
-*.tmp
-*.temp
+tmp/
+temp/
+# 环境配置（含数据库密码、端口、密钥等）
+*.properties
+*.yml
+!application.yml.example  # 保留示例配置（无敏感信息）
+!application.properties.example
+# 本地配置覆盖（开发者本地自定义配置）
+application-dev.yml
+application-local.yml
+# 数据库文件
+*.db
+*.sql
+# Java运行时文件
+*.class
+# 打包后的jar/war（无需跟踪，CI/CD可重新构建）
+*.jar
+*.war
+*.ear
 
-# 上传文件
+# ===================== 通用忽略（前后端共用） =====================
+# 敏感文件
+*.pem
+*.key
+*.jks  # Spring Boot证书文件
+# 上传目录（用户上传的图片/文件，动态生成）
 uploads/
+# 测试/临时脚本
+fix_tests.py
+*.tmp
+*.bak
