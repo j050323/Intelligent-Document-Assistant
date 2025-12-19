@@ -1,0 +1,10 @@
+/* Force dialog body to have proper height */
+.el-dialog__body {
+  min-height: 70vh !important;
+  height: 70vh !important;
+}
+
+.el-dialog {
+  display: flex !important;
+  flex-direction: column !important;
+}

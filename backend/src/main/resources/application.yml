@@ -1,0 +1,95 @@
+spring:
+  profiles:
+    active: dev  # 默认使用开发环境配置
+  
+  application:
+    name: user-auth-system
+  
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:docassistant}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.springframework.dialect.PostgreSQLDialect
+        format_sql: true
+        # 查询优化配置
+        jdbc:
+          batch_size: 20  # 批量操作大小
+          fetch_size: 50  # 查询获取大小
+        order_inserts: true  # 优化插入顺序
+        order_updates: true  # 优化更新顺序
+  
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+  
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 60000
+  
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:your-secret-key-change-this-in-production-min-256-bits}
+  access-token-expiration: 86400000  # 24 hours in milliseconds
+  refresh-token-expiration: 2592000000  # 30 days in milliseconds
+  remember-me-expiration: 2592000000  # 30 days in milliseconds
+
+# Application Configuration
+app:
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
+  verification-code:
+    expiration: 600  # 10 minutes in seconds
+  password-reset:
+    expiration: 3600  # 1 hour in seconds
+  file-storage:
+    avatar-path: ${AVATAR_STORAGE_PATH:./uploads/avatars}
+    document-path: ${DOCUMENT_STORAGE_PATH:./uploads/documents}
+  upload:
+    avatar-dir: ${AVATAR_UPLOAD_DIR:uploads/avatars}
+    max-avatar-size: ${MAX_AVATAR_SIZE:5242880}  # 5MB in bytes
+    max-document-size: ${MAX_DOCUMENT_SIZE:104857600}  # 100MB in bytes
+    temp-dir: ${TEMP_UPLOAD_DIR:uploads/temp}  # 分块上传临时目录
+  storage:
+    default-quota: ${STORAGE_DEFAULT_QUOTA:1073741824}  # 1GB in bytes
+
+# Logging
+logging:
+  level:
+    root: INFO
+    com.docassistant: DEBUG
+    org.springframework.security: DEBUG

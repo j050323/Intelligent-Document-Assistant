@@ -1,0 +1,120 @@
+spring:
+  application:
+    name: user-auth-system
+  
+  # PostgreSQL 数据库配置
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:docassistant}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate  # 生产环境使用 validate，不自动修改表结构
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+  
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+  
+  # Redis 配置
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 60000
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+          max-wait: -1ms
+  
+  # 邮件配置
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+  
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: always
+    include-binding-errors: never
+    include-stacktrace: never
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET}  # 必须通过环境变量设置，至少 256 位
+  access-token-expiration: ${JWT_ACCESS_TOKEN_EXPIRATION:86400000}  # 24 hours
+  refresh-token-expiration: ${JWT_REFRESH_TOKEN_EXPIRATION:2592000000}  # 30 days
+  remember-me-expiration: ${JWT_REMEMBER_ME_EXPIRATION:2592000000}  # 30 days
+
+# Application Configuration
+app:
+  environment: prod
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:3000}
+  verification-code:
+    expiration: 600  # 10 minutes
+  password-reset:
+    expiration: 3600  # 1 hour
+  file-storage:
+    avatar-path: ${AVATAR_STORAGE_PATH:/var/lib/docassistant/avatars}
+    document-path: ${DOCUMENT_STORAGE_PATH:/var/lib/docassistant/documents}
+  upload:
+    avatar-dir: ${AVATAR_UPLOAD_DIR:/var/lib/docassistant/avatars}
+    max-avatar-size: ${MAX_AVATAR_SIZE:5242880}  # 5MB
+    max-document-size: ${MAX_DOCUMENT_SIZE:104857600}  # 100MB
+  storage:
+    default-quota: ${STORAGE_DEFAULT_QUOTA:1073741824}  # 1GB
+
+# Logging
+logging:
+  level:
+    root: INFO
+    com.docassistant: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+  file:
+    name: ${LOG_FILE:/var/log/docassistant/application.log}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 30
+      total-size-cap: 1GB

@@ -1,0 +1,100 @@
+spring:
+  application:
+    name: user-auth-system
+  
+  main:
+    allow-bean-definition-overriding: true
+  
+  # 数据库配置（开发环境）
+  # 注意：在Docker环境中，这些配置会被环境变量覆盖
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:docassistant;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL}
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.h2.Driver}
+  
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+  
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:create-drop}
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT:org.hibernate.dialect.H2Dialect}
+        format_sql: true
+  
+  flyway:
+    enabled: ${SPRING_FLYWAY_ENABLED:false}  # 开发环境默认禁用 Flyway，使用 JPA 自动创建表
+  
+  # Redis 配置（开发环境可选）
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: 
+      timeout: 60000
+  
+  # 邮件配置（开发环境使用模拟）
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: test@example.com
+    password: test
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# JWT Configuration
+jwt:
+  secret: dev-secret-key-for-testing-only-min-256-bits-long-string-here
+  access-token-expiration: 86400000  # 24 hours
+  refresh-token-expiration: 2592000000  # 30 days
+  remember-me-expiration: 2592000000  # 30 days
+
+# Application Configuration
+app:
+  environment: dev  # 开发环境标识
+  cors:
+    allowed-origins: http://localhost:5173,http://localhost:3000,http://localhost:8080
+  verification-code:
+    expiration: 600  # 10 minutes
+  password-reset:
+    expiration: 3600  # 1 hour
+  file-storage:
+    avatar-path: ./uploads/avatars
+    document-path: ./uploads/documents
+  upload:
+    avatar-dir: uploads/avatars
+    max-avatar-size: 5242880  # 5MB
+    max-document-size: 104857600  # 100MB
+  storage:
+    default-quota: 1073741824  # 1GB
+
+# Logging
+logging:
+  level:
+    root: INFO
+    com.docassistant: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

@@ -1,0 +1,17 @@
+# 开发环境 Dockerfile - 支持热重载
+FROM maven:3.9-eclipse-temurin-17
+
+WORKDIR /app
+
+# 复制 pom.xml 并下载依赖
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# 复制源代码
+COPY src ./src
+
+# 暴露应用端口和调试端口
+EXPOSE 8080 5005
+
+# 使用 Spring Boot DevTools 启动，支持热重载和远程调试
+CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"]
